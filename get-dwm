@@ -1,0 +1,103 @@
+#!/bin/bash
+
+set -e  # Exit on any error
+
+SRC_DIR="$HOME/.local/src"
+DWM_DESKTOP_FILE="./dwm.desktop"
+TOUCHPAD_CONF_FILE="./30-touchpad.conf"
+CUSTOM_BASH_PROFILE="./append_profile"
+CUSTOM_BASHRC="./append_bashrc"
+
+# ----------- FUNCTIONS -----------
+
+check_dependencies() {
+    echo "🔍 Checking for required commands..."
+    for cmd in git make sudo; do
+        if ! command -v "$cmd" &>/dev/null; then
+            echo "❌ Required command '$cmd' not found. Please install it."
+            exit 1
+        fi
+    done
+}
+
+copy_config_files() {
+    echo "🖼️ Copying dwm.desktop to /usr/share/xsessions..."
+    sudo mkdir -p /usr/share/xsessions
+    sudo cp "$DWM_DESKTOP_FILE" /usr/share/xsessions/dwm.desktop
+
+    echo "🖱️ Copying 30-touchpad.conf to /etc/X11/xorg.conf.d/..."
+    sudo mkdir -p /etc/X11/xorg.conf.d
+    sudo cp "$TOUCHPAD_CONF_FILE" /etc/X11/xorg.conf.d/30-touchpad.conf
+}
+
+append_to_profile() {
+    local marker="# BEGIN custom additions"
+    if ! grep -qF "$marker" ~/.bash_profile; then
+        echo "📝 Appending custom bash additions to ~/.bash_profile..."
+        {
+            echo "$marker"
+            cat "$CUSTOM_BASH_PROFILE"
+            echo "# END custom additions"
+        } >> ~/.bash_profile
+    else
+        echo "ℹ️ Custom bash additions already present in ~/.bash_profile. Skipping."
+    fi
+}
+
+append_to_bashrc() {
+    local marker="# BEGIN custom additions"
+    if ! grep -qF "$marker" ~/.bashrc; then
+        echo "📝 Appending custom bash additions to ~/.bashrc..."
+        {
+            echo "$marker"
+            cat "$CUSTOM_BASHRC"
+            echo "# END custom additions"
+        } >> ~/.bashrc
+    else
+        echo "ℹ️ Custom bash additions already present in ~/.bashrc. Skipping."
+    fi
+}
+
+create_recordings_dir() {
+    echo "📁 Creating ~/Public/Recordings directory..."
+    mkdir -p "$HOME/Public/Recordings"
+}
+
+clone_and_build_suckless() {
+    echo "🔧 Cloning and building Suckless tools..."
+
+    declare -A SUCKLESS_REPOS=(
+        [dwm]="https://github.com/0xfarco/dwm"
+        [dwmblocks]="https://github.com/0xfarco/slstatus"
+        [dmenu]="https://github.com/0xfarco/dmenu"
+        [st]="https://github.com/0xfarco/st"
+    )
+
+    mkdir -p "$SRC_DIR"
+    for name in "${!SUCKLESS_REPOS[@]}"; do
+        repo="${SUCKLESS_REPOS[$name]}"
+        dest="$SRC_DIR/$name"
+
+        echo "📥 Cloning $name..."
+        rm -rf "$dest"
+        git clone "$repo" "$dest"
+
+        echo "⚙️ Building and installing $name..."
+        cd "$dest"
+        make
+        sudo make clean install
+        cd -
+    done
+}
+
+# ----------- EXECUTION -----------
+
+check_dependencies
+copy_config_files
+append_to_profile
+append_to_bashrc
+create_recordings_dir
+clone_and_build_suckless
+
+echo "✅ Setup complete."
+
