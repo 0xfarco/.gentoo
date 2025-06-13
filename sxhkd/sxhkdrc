@@ -32,7 +32,7 @@ alt + f
   firefox-bin
 
 alt + shift + f
-  firefox --private-window
+  firefox-bin --private-window
 
 alt + c
   chromium
