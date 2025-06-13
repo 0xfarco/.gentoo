@@ -4,18 +4,6 @@ XF86MonBrightnessDown
 XF86MonBrightnessUp
   xbacklight -inc 5
 
-#XF86AudioRaiseVolume
-#	pactl set-sink-volume @DEFAULT_SINK@ +5%
-#	pamixer -i 5
-
-#XF86AudioLowerVolume
-#	pactl set-sink-volume @DEFAULT_SINK@ -5%
-#	pamixer -d 5
-
-#XF86AudioMute
-#	pactl set-sink-mute @DEFAULT_SINK@ toggle 
-#	pamixer --toggle-mute
-
 XF86Audio{Raise,Lower}Volume  
   pulsemixer --change-volume {+,-}1  
  
@@ -35,7 +23,10 @@ alt + shift + f
   firefox-bin --private-window
 
 alt + c
-  chromium
+  googe-chrome-stable
+
+alt + shift + c
+  google-chrome-stable --incognito
 
 alt + b
   brave
@@ -53,10 +44,7 @@ alt + p
   sysact
 
 alt + m
-  st -e neomutt
+  st -e calcurse
 
 Print
   flameshot gui
-
-alt + shift + c
-  st -e calcurse
