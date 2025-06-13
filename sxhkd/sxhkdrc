@@ -23,7 +23,7 @@ alt + shift + f
   firefox-bin --private-window
 
 alt + c
-  googe-chrome-stable
+  google-chrome-stable
 
 alt + shift + c
   google-chrome-stable --incognito
