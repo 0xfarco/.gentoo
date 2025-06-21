@@ -22,12 +22,6 @@ alt + f
 alt + shift + f
   librewolf-bin --private-window
 
-alt + c
-  chromium
-
-alt + shift + c
-  chromium --incognito
-
 alt + b
   brave
 
@@ -43,8 +37,11 @@ alt + shift + e
 alt + p
   powermenu
 
-alt + m
+alt + shift + m
   st -e calcurse
 
 Print
   flameshot gui
+
+alt + shift + n
+  st -e nmtui
